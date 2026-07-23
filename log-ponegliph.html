@@ -136,22 +136,32 @@
     <script>
         const stations = [
             {
+                title: "Water 7",
                 answer: "zoro",
-                next: "A könyvtár bejárata."
+                next: "Greg-Vin Pincészet (22-es pince)"
             },
             {
+                title: "Greg-Vin Pincészet",
                 answer: "nami",
-                next: "Az aula."
+                next: "Tóth Ferenc Pincészet (46-os pince)"
             },
             {
+                title: "Tóth Ferenc Pincészet",
                 answer: "luffy",
-                next: "A tornaterem."
+                next: "Farsang Pincészet (27-es pince)"
             },
             {
+                title: "Farsang Pincészet",
                 answer: "sanji",
-                next: "Az udvari pad."
+                next: "Petrény Winery (47-es pince)"
             },
             {
+                title: "Petrény Winery",
+                answer: "franky",
+                next: "Ostorosbor (33-as pince)"
+            },
+            {
+                title: "Ostorosbor",
                 answer: "brook",
                 next: "Gratulálunk! Megtaláltátok a One Piece-t!"
             }
@@ -170,7 +180,7 @@
 
                 document.getElementById("result").textContent = "✔ Helyes!";
                 document.getElementById("location").innerHTML =
-                    "Következő helyszín:<br><b>" + stations[current].next + "</b>";
+                    "Hajózz tovább: <br><b>" + stations[current].next + "</b>";
 
                 current++;
 
@@ -198,7 +208,7 @@
             } else {
 
                 document.getElementById("stage").innerHTML =
-                    `Jelenlegi sziget: ${current + 1} / ${stations.length}`;
+                    `${current + 1}. állomás – <b>${stations[current].title}</b>`;
 
             }
 
