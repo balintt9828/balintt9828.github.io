@@ -19,14 +19,18 @@
       }
 
       .card {
-        width: 420px;
-        max-width: 90%;
+        width: 320px;
+        max-width: 84%;
+        min-height: 30vh;
         background: #f7ecd4;
-        border: 8px solid #8b5a2b;
-        border-radius: 20px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
-        padding: 35px;
+        border: 6px solid #8b5a2b;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+        padding: 18px 18px 16px;
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
 
       h1 {
@@ -34,17 +38,25 @@
         margin-top: 0;
       }
 
+      #stage {
+        margin: 0 0 8px;
+        min-height: 2.2em;
+      }
+
       .logpose {
-        width: 220px;
-        height: 220px;
+        width: 200px;
+        height: 200px;
         border-radius: 50%;
-        margin: auto;
-        position: relative;
+        position: absolute;
+        left: 50%;
+        top: 12px;
+        transform: translateX(-50%);
         background: radial-gradient(circle, #dff7ff 0%, #9de4ff 45%, #3ca8d8 100%);
-        border: 12px solid #d9b25f;
+        border: 10px solid #d9b25f;
         box-shadow:
-          inset 0 0 30px rgba(255, 255, 255, 0.7),
-          0 0 20px rgba(0, 0, 0, 0.3);
+          inset 0 0 25px rgba(255, 255, 255, 0.7),
+          0 0 18px rgba(0, 0, 0, 0.25);
+        z-index: 2;
       }
 
       .pointer {
@@ -70,24 +82,39 @@
         border-radius: 50%;
       }
 
+      .bottom-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        width: 100%;
+        margin-top: 12px;
+        gap: 6px;
+      }
+
+      .bottom-panel > * {
+        width: calc(100% - 20px);
+      }
+
       input {
-        width: 90%;
-        padding: 12px;
-        font-size: 18px;
+        width: calc(100% - 20px);
+        padding: 10px;
+        font-size: 16px;
         border-radius: 8px;
         border: 2px solid #8b5a2b;
-        margin-top: 25px;
+        box-sizing: border-box;
       }
 
       button {
-        margin-top: 18px;
-        padding: 12px 35px;
-        font-size: 18px;
+        width: calc(100% - 20px);
+        padding: 10px 24px;
+        font-size: 16px;
         background: #ffb000;
         border: none;
         border-radius: 10px;
         cursor: pointer;
         font-weight: bold;
+        box-sizing: border-box;
       }
 
       button:hover {
@@ -95,8 +122,7 @@
       }
 
       #result {
-        margin-top: 25px;
-        font-size: 22px;
+        font-size: 18px;
         font-weight: bold;
       }
 
@@ -109,28 +135,27 @@
       }
 
       .location {
-        margin-top: 20px;
-        font-size: 20px;
+        font-size: 16px;
         color: #003366;
         font-weight: bold;
       }
     </style>
 </head>
   <body>
-    <div class="card">
-      <h1>Log Pose</h1>
-      <h2 id="stage"></h2>
+    <div class="scene">
       <div class="logpose">
         <div class="pointer" id="pointer"></div>
       </div>
 
-      <p>Írd be a megfejtést!</p>
-      <input id="answer" placeholder="Megoldás" />
-      <br />
-      <button onclick="checkAnswer()">Ellenőrzés</button>
-
-      <div id="result"></div>
-      <div id="location"></div>
+      <div class="card">
+        <div class="bottom-panel">
+          <h2 id="stage"></h2>
+          <input id="answer" placeholder="Megoldás" />
+          <button onclick="checkAnswer()">Ellenőrzés</button>
+          <div id="result"></div>
+          <div id="location"></div>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -178,10 +203,12 @@
 
             if (input === normalize(stations[current].answer)) {
 
+                document.getElementById("answer").value = "";
                 document.getElementById("result").textContent = "✔ Helyes!";
                 document.getElementById("location").innerHTML =
                     "Hajózz tovább: <br><b>" + stations[current].next + "</b>";
 
+                setRandomPointerAngle();
                 current++;
 
                 // Elmentjük a haladást
@@ -191,11 +218,39 @@
 
             } else {
 
+                spinPointerWrong();
                 document.getElementById("result").textContent =
                     "✖ Ez nem a jelenlegi sziget megfejtése.";
 
             }
 
+        }
+
+        function spinPointerWrong() {
+            const pointer = document.getElementById("pointer");
+            pointer.style.transition = "0.08s linear";
+
+            const duration = 1200;
+            const start = performance.now();
+
+            function animate(timestamp) {
+                const elapsed = timestamp - start;
+                const angle = ((elapsed / duration) * 720) % 360;
+                pointer.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+
+                if (elapsed < duration) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        function setRandomPointerAngle() {
+            const pointer = document.getElementById("pointer");
+            pointer.style.transition = "0.8s ease";
+            const angle = Math.random() * 360;
+            pointer.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
         }
 
         function updateHeader() {
